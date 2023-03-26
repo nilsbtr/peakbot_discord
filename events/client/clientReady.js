@@ -1,11 +1,12 @@
 const { Events, ActivityType } = require("discord.js");
-const { loadCommands } = require("../handlers/commandHandler");
+const { loadCommands } = require("../../handlers/commandHandler");
+const chalk = require("chalk");
 
 module.exports = {
   name: Events.ClientReady,
   once: true,
   execute(client) {
-    console.info("\n\x1b[36m%s\x1b[0m", "Client Ready!");
+    console.info(chalk.green("\nClient Ready!"));
     console.log(`Logged in as ${client.user.tag}`);
     client.user.setActivity(`mit Shaxx`, {
       type: ActivityType.Playing,

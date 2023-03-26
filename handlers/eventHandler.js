@@ -1,10 +1,12 @@
 const { loadFiles } = require("../functions/fileLoader");
+const chalk = require("chalk");
 
 async function loadEvents(client) {
-  console.time("Time");
+  console.info(chalk.blue("\nStarting loading events..."));
+  console.time("Time elapsed loading events");
 
   client.events = new Map();
-  const events = new Array();
+  const table = new Array();
 
   const files = await loadFiles("events");
 
@@ -17,14 +19,22 @@ async function loadEvents(client) {
       target[event.once ? "once" : "on"](event.name, execute);
       client.events.set(event.name, execute);
 
-      events.push({ Event: event.name, Status: "✓" });
+      table.push({ Event: event.name, Status: "✓" });
     } catch (error) {
-      events.push({ Event: file.split("/").pop().slice(0, -3), Status: "✗" });
+      table.push({ Event: file.split("/").pop().slice(0, -3), Status: "✗" });
+      console.warn(
+        chalk.yellow(
+          `Could not register the ${file
+            .split("/")
+            .pop()
+            .slice(0, -3)} event: ${error}`
+        )
+      );
     }
   }
-  console.table(events, ["Event", "Status"]);
-  console.info("\n\x1b[36m%s\x1b[0m", "Loaded Events!");
-  console.timeEnd("Time");
+  console.table(table, ["Event", "Status"]);
+  console.info(chalk.green("Loaded Events!"));
+  console.timeEnd("Time elapsed loading events");
 }
 
 module.exports = { loadEvents };
